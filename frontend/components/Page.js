@@ -1,7 +1,22 @@
 import styled, { createGlobalStyle } from 'styled-components';
+
 import Header from './Header';
 
 const GlobalStyles = createGlobalStyle`
+@font-face {
+    font-family: RobotoSlab;
+    src: url('/static/fonts/RobotoSlab-Regular.ttf');
+  }
+
+  @font-face {
+    font-family: OpenSans;
+    src: url('/static/fonts/OpenSans-Regular.ttf') format('ttf');
+  }
+
+  @font-face {
+    font-family: OpenSansLight;
+    src: url('/static/fonts/OpenSans-Light.ttf');
+  }
   :root {
     --red: #FF4949;
     --black: #2E2E2E;
@@ -11,16 +26,61 @@ const GlobalStyles = createGlobalStyle`
     --maxWidth: 1200px;
   }
 
+
   *{
     box-sizing: border-box;
   }
 
   html{
-      font-size: 10px;
+    font-size: 10px;
+    font-family:  OpenSans, serif;
+    color: var(--black);
   }
 
   body {
     font-size: 2rem;
+  }
+
+
+
+  p, li {
+    letter-spacing: 0.5px;
+  }
+  h1,h2,h3,h4,h5,h6 {
+    font-weight: normal;
+    margin: 0;
+    font-family:  RobotoSlab, serif;
+  }
+  a {
+    color: var(--black);
+    text-decoration-color: var(--yellow);
+    /* Chrome renders this weird with this font, so we turn it off */
+    text-decoration-skip-ink: none;
+  }
+  mark, .mark {
+    background: var(--yellow);
+    padding: 0 2px 2px 2px;
+    margin: 0;
+    display: inline;
+    line-height: 1;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  .section-header{
+    margin-bottom: 75px;
+    text-align: center;
+    color: black;
+  }
+
+  .lead{
+    margin: 0 0 20px 0;
+    font-size: 2rem;
+    font-weight: 300;
+    line-height: 1.4;
+    font-family: OpenSansLight;
   }
 
   fieldset {
