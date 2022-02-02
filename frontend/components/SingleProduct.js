@@ -2,6 +2,8 @@ import { useQuery } from '@apollo/client';
 import gql from 'graphql-tag';
 import Head from 'next/head';
 import styled from 'styled-components';
+import { PayPalButtons } from '@paypal/react-paypal-js';
+import { useState } from 'react';
 import DisplayError from './ErrorMessage';
 import formatMoney from '../utils/formatMoney';
 
@@ -95,10 +97,51 @@ export default function SingleProduct({ id }) {
       id,
     },
   });
+
+  const [succeeded, setSucceeded] = useState(false);
+  const [paypalErrorMessage, setPaypalErrorMessage] = useState('');
+  const [orderID, setOrderID] = useState(false);
+  const [billingDetails, setBillingDetails] = useState('');
+
+  // creates a paypal order
+  const createOrder = (data, actions) =>
+    actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: {
+              // charge users $499 per order
+              value: 499,
+            },
+          },
+        ],
+        // remove the applicaiton_context object if you need your users to add a shipping address
+        application_context: {
+          shipping_preference: 'NO_SHIPPING',
+        },
+      })
+      .then((orderID) => {
+        setOrderID(orderID);
+        console.log({ orderID });
+        return orderID;
+      });
+
+  // handles when a payment is confirmed for paypal
+  const onApprove = (data, actions) =>
+    actions.order
+      .capture()
+      .then(function (details) {
+        const { payer } = details;
+        setBillingDetails(payer);
+        setSucceeded(true);
+        console.log({ details });
+      })
+      .catch((err) => setPaypalErrorMessage('Something went wrong.'));
+
   if (loading) return <p>Loading...</p>;
   if (error) return <DisplayError error={error} />;
   const { Product } = data;
-  console.log(Product);
+  // console.log(Product);
   return (
     <ProductStyles>
       <Head>
@@ -112,6 +155,18 @@ export default function SingleProduct({ id }) {
         </p>
         <p>{Product.description}</p>
       </div>
+
+      <PayPalButtons
+        style={{
+          color: 'blue',
+          shape: 'pill',
+          label: 'pay',
+          tagline: false,
+          layout: 'horizontal',
+        }}
+        createOrder={createOrder}
+        onApprove={onApprove}
+      />
     </ProductStyles>
   );
 }

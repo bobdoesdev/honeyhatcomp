@@ -1,7 +1,9 @@
 import { ApolloProvider } from '@apollo/client';
 import NProgress from 'nprogress';
 import Router from 'next/router';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import Page from '../components/Page';
+import { PAYPAL_CLIENT_ID } from '../utils/constants';
 
 // TODO swap with your own
 // import 'nprogress/nprogress.css';
@@ -18,7 +20,11 @@ function MyApp({ Component, pageProps, apollo }) {
   return (
     <ApolloProvider client={apollo}>
       <Page>
-        <Component {...pageProps} />
+        <PayPalScriptProvider
+          options={{ 'client-id': PAYPAL_CLIENT_ID.clientId }}
+        >
+          <Component {...pageProps} />
+        </PayPalScriptProvider>
       </Page>
     </ApolloProvider>
   );
