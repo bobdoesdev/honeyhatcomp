@@ -104,17 +104,18 @@ export default function SingleProduct({ id }) {
   const [billingDetails, setBillingDetails] = useState('');
 
   // creates a paypal order
-  const createOrder = (data, actions) =>
+  function createOrder(data, actions) {
+    console.log(data);
     actions.order
       .create({
-        purchase_units: [
-          {
-            amount: {
-              // charge users $499 per order
-              value: 499,
-            },
-          },
-        ],
+        // purchase_units: [
+        //   {
+        //     amount: {
+        //       // charge users $499 per order
+        //       value: data.price,
+        //     },
+        //   },
+        // ],
         // remove the applicaiton_context object if you need your users to add a shipping address
         application_context: {
           shipping_preference: 'NO_SHIPPING',
@@ -125,6 +126,7 @@ export default function SingleProduct({ id }) {
         console.log({ orderID });
         return orderID;
       });
+  }
 
   // handles when a payment is confirmed for paypal
   const onApprove = (data, actions) =>
@@ -140,8 +142,8 @@ export default function SingleProduct({ id }) {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <DisplayError error={error} />;
+
   const { Product } = data;
-  // console.log(Product);
   return (
     <ProductStyles>
       <Head>
@@ -164,7 +166,10 @@ export default function SingleProduct({ id }) {
           tagline: false,
           layout: 'horizontal',
         }}
-        createOrder={createOrder}
+        amount={Product.price}
+        currency="USD"
+        // price={}
+        // createOrder={() => createOrder()}
         onApprove={onApprove}
       />
     </ProductStyles>
